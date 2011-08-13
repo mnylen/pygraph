@@ -73,6 +73,49 @@ class Digraph(object):
     def nodes_set(self):
         return set(self.nodes.keys())
 
+    def to_dot(self):
+        dot = "digraph {\n"
+
+        for v in self.nodes_set():
+            if len(self.nodes[v]) == 0:
+                dot += "\t%s;" % str(v)
+            else:
+                for w in self.nodes[v]:
+                    dot += "\t%s -> %s;\n" % (str(v), str(w))
+
+        dot += "}\n"
+        
+        return dot
+
+
+    @staticmethod
+    def from_file(filename):
+        f = None
+        dg = Digraph()
+        
+        try:
+            f = open(filename, "r")
+
+            for line in f.readlines():
+                parts = line.split(":")
+
+                node_name = ""
+                edge_target_list_str = ""
+
+                if len(parts) > 1:
+                    node_name, edge_target_list_str = parts
+                else:
+                    node_name = parts[0]
+
+                dg.add_node(NamedNode(node_name))
+                for edge_target_name in edge_target_list_str.strip().split(" "):
+                    dg.add_edge(NamedNode(node_name), NamedNode(edge_target_name))
+        finally:
+            if f:
+                f.close()
+
+        return dg
+
 class ByteNodeMatrix(object):
     matrix = dict
 
