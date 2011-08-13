@@ -179,11 +179,12 @@ class Transitivity(object):
         for i in digraph.nodes_set():
             for j in digraph.nodes[i]:
                 if i == j: continue
+                if not matrix.get(i, j): continue
                 
                 for k in digraph.nodes[i]:
                     if j == k: continue
 
-                    if matrix.get(i, j) == 1 and matrix.get(j, k) == 1:
+                    if matrix.get(j, k) == 1:
                         # If this happens it means there are edges i -> j and
                         # j -> k. Because this is an acyclic closure, we
                         # therefore have also edge i -> k, which can be
@@ -192,7 +193,6 @@ class Transitivity(object):
                         if not remove.has_key(i): remove[i] = set()
                         remove[i].add(k)
                         matrix.set(i, k, 0)
-                    
 
         for node in remove:
             digraph.nodes[node] -= remove[node]
