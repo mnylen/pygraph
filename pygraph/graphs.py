@@ -213,6 +213,21 @@ class Transitivity(object):
         for node in remove:
             digraph.nodes[node] -= remove[node]
 
+    @staticmethod
+    def reduce(digraph):
+        """
+        @digraph: Digraph
+
+        Returns quotient digraph G' from the digraph G with redundant
+        edges removed. Check G'.nodemap for mapping of nodes in G to nodes
+        in G'.
+        
+        """
+
+        quotient = StrongComponents(digraph).quotient()
+        Transitivity.acyclic_reduce(quotient)
+
+        return quotient
 
 class StrongComponents(object):
     digraph    = Digraph
