@@ -42,24 +42,32 @@ class ComponentNode(Node):
         return "__".join(map(lambda x: str(x), self.nodes))
 
 class Digraph(object):
-    nodes   = dict
-    nodemap = None
+    nodes    = dict
+    nodemap  = None
+    incoming = dict
     
     def __init__(self):
         self.nodes = dict()
-
+        self.incoming = dict()
+        
     def add_edge(self, from_node, to_node):
         self.add_node(from_node)
         self.add_node(to_node)
         
         self.nodes[from_node].add(to_node)
+        self.incoming[to_node].add(from_node)
 
     def add_node(self, node):
         if not self.nodes.has_key(node):
             self.nodes[node] = set()
+            self.incoming[node] = set()
 
     def has_edge(self, from_node, to_node):
         return self.nodes.has_key(from_node) and to_node in self.nodes[from_node]
+
+    def remove_edge(self, from_node, to_node):
+        self.nodes[from_node].remove(to_node)
+        self.incoming[to_node].remove(from_node)
 
     def edges(self):
         edges = set()
@@ -87,7 +95,19 @@ class Digraph(object):
         
         return dot
 
+    def copy(self):
+        dg          = Digraph()
+        dg.nodes    = self.nodes.copy()
+        dg.nodemap  = self.nodemap.copy()
+        dg.incoming = self.incoming.copy()
 
+        return dg
+
+    def revert(self):
+        tmp = self.nodes
+        self.nodes = self.incoming
+        self.incoming = tmp
+    
     @staticmethod
     def from_file(filename):
         f = None
@@ -253,8 +273,10 @@ class Transitivity(object):
                         remove[i].add(k)
                         matrix.set(i, k, 0)
 
-        for node in remove:
-            digraph.nodes[node] -= remove[node]
+        for i in remove:
+            for j in remove[i]:
+                digraph.nodes[i].remove(j)
+                digraph.incoming[j].remove(i)
 
     @staticmethod
     def reduce(digraph):
@@ -346,3 +368,40 @@ class StrongComponents(object):
 
 
         return quotient
+
+class TopologicalSort(object):
+    digraph = Digraph
+    
+    def __init__(self, digraph):
+        self.digraph = digraph.copy()
+
+    def run(self):
+        order = list()
+        nodes = self.__find_nodes_without_incoming_edges()
+
+        while len(nodes) > 0:
+            n = nodes.pop()
+            order.append(n)
+
+            adjacent_nodes = list(self.digraph.nodes[n])
+
+            for m in adjacent_nodes:
+                self.digraph.remove_edge(n, m)
+
+                
+                if len(self.digraph.incoming[m]) == 0:
+                    nodes.append(m)
+
+        if len(self.digraph.edges()) > 0:
+            raise RuntimeError, "Graph has at least one cycle. May be you forgot to use StrongComponents.quotient?"
+
+        return order
+
+    def __find_nodes_without_incoming_edges(self):
+        nodes = list()
+
+        for node in self.digraph.incoming:
+            if len(self.digraph.incoming[node]) == 0:
+                nodes.append(node)
+
+        return nodes
