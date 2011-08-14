@@ -1,5 +1,6 @@
 import unittest
-import pygraph.graphs as graphs
+import pygraph.core as graphs
+import pygraph.algorithms.strong_components as scc
 
 class TestStrongComponents(unittest.TestCase):
     def setUp(self):
@@ -14,7 +15,7 @@ class TestStrongComponents(unittest.TestCase):
         self.digraph.add_edge(self.a, self.b)
         self.digraph.add_edge(self.b, self.a)
 
-        quotient = graphs.StrongComponents(self.digraph).quotient()
+        quotient = scc.quotient(self.digraph)
         nodemap  = quotient.nodemap
 
         self.assertEquals(2, len(nodemap))
@@ -36,7 +37,7 @@ class TestStrongComponents(unittest.TestCase):
         self.digraph.add_edge(self.b, self.a)
         self.digraph.add_edge(self.b, self.c)
 
-        quotient = graphs.StrongComponents(self.digraph).quotient()
+        quotient = scc.quotient(self.digraph)
         nodemap  = quotient.nodemap
         
         self.assertEquals(nodemap[self.a], nodemap[self.b])
@@ -63,7 +64,7 @@ class TestStrongComponents(unittest.TestCase):
         self.digraph.add_edge(self.b, self.c)
         self.digraph.add_edge(self.c, self.b)
 
-        quotient = graphs.StrongComponents(self.digraph).quotient()
+        quotient = scc.quotient(self.digraph)
         nodemap  = quotient.nodemap
 
         self.assertEquals(3, len(nodemap))
@@ -94,7 +95,7 @@ class TestStrongComponents(unittest.TestCase):
         self.digraph.add_edge(self.d, self.c)
         self.digraph.add_edge(self.d, self.e)
 
-        quotient = graphs.StrongComponents(self.digraph).quotient()
+        quotient = scc.quotient(self.digraph)
         nodemap  = quotient.nodemap
 
         self.assertTrue(nodemap[self.a] == nodemap[self.b])

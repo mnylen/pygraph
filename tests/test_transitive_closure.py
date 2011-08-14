@@ -1,4 +1,5 @@
-import pygraph.graphs as graphs
+import pygraph.core as graphs
+from pygraph.algorithms.transitivity import acyclic_closure
 import unittest
 
 class TestTransitiveClosure(unittest.TestCase):
@@ -17,7 +18,7 @@ class TestTransitiveClosure(unittest.TestCase):
 
 
     def test_generates_reachability_matrix(self):
-        matrix = graphs.Transitivity.acyclic_closure(self.digraph)
+        matrix = acyclic_closure(self.digraph)
 
         # Reachability from A
         self.assertEquals(1, matrix.get(self.a, self.a))

@@ -1,5 +1,5 @@
 import unittest
-import pygraph.graphs as graphs
+import pygraph.core as graphs
 
 class TestSubgraphs(unittest.TestCase):
     def setUp(self):

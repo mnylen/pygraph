@@ -1,4 +1,5 @@
-import pygraph.graphs as graphs
+import pygraph.core as graphs
+from pygraph.algorithms.transitivity import acyclic_reduce
 import unittest
 
 class TestTransitiveClosure(unittest.TestCase):
@@ -21,7 +22,7 @@ class TestTransitiveClosure(unittest.TestCase):
         self.digraph.add_edge(self.d, self.e)
 
     def test_removes_redundant_edges(self):
-        graphs.Transitivity.acyclic_reduce(self.digraph)
+        acyclic_reduce(self.digraph)
         self.assertEquals(5, len(self.digraph.edges()))
         self.assertTrue(self.digraph.has_edge(self.a, self.b))
         self.assertTrue(self.digraph.has_edge(self.a, self.c))
