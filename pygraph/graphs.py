@@ -25,6 +25,12 @@ class NamedNode(Node):
     def __str__(self):
         return self.name
 
+class NodeVisitor(Node):
+    def visit_node(self, dg, v):
+        pass
+
+    def visit_edge(self, dg, v, w):
+        pass
 
 class ComponentNode(Node):
     """
@@ -94,6 +100,32 @@ class Digraph(object):
         dot += "}\n"
         
         return dot
+
+    def subgraph(self, v):
+        """
+        Creates a subgraph by performing DFS in the current digraph
+        for node v and taking any nodes and edges traversed to the
+        subgraph.
+
+        returns Digraph
+
+        """
+
+        class Visitor(NodeVisitor):
+            def __init__(self, result):
+                self.result = result
+
+            def visit_node(self, dg, v):
+                self.result.add_node(v)
+
+            def visit_edge(self, dg, v, w):
+                self.result.add_edge(v, w)
+
+        dg = Digraph()
+        visitor = Visitor(dg)
+
+        Traversal.dfs(self, v, visitor)
+        return dg
 
     def copy(self):
         dg          = Digraph()
@@ -202,8 +234,7 @@ class Traversal(object):
             if not visited.has_key(top):
                 visited[top] = True
 
-                if visitor is not None:
-                    visitor(root)
+                if visitor is not None: visitor.visit_node(digraph, top)
 
                 if continue_lambda is not None:
                     if not continue_lambda(top):
@@ -211,6 +242,7 @@ class Traversal(object):
                         break
 
                 for adjacent_node in digraph.nodes[top]:
+                    if visitor is not None: visitor.visit_edge(digraph, top, adjacent_node)
                     stack.append(adjacent_node)
 
         return cancelled
