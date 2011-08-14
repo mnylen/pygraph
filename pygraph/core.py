@@ -123,7 +123,7 @@ class Digraph(object):
 
         for v in self.nodes_set():
             if len(self.nodes[v]) == 0:
-                dot += "\t%s;" % str(v)
+                dot += "\t%s;\n" % str(v)
             else:
                 for w in self.nodes[v]:
                     dot += "\t%s -> %s;\n" % (str(v), str(w))
@@ -193,9 +193,13 @@ class Digraph(object):
                 else:
                     node_name = parts[0]
 
-                dg.add_node(NamedNode(node_name))
-                for edge_target_name in edge_target_list_str.strip().split(" "):
-                    dg.add_edge(NamedNode(node_name), NamedNode(edge_target_name))
+                if len(node_name) > 0:
+                    dg.add_node(NamedNode(node_name))
+                    for edge_target_name in edge_target_list_str.strip().split(" "):
+                        edge_target_name = edge_target_name.strip()
+                        
+                        if len(edge_target_name) > 0:
+                            dg.add_edge(NamedNode(node_name), NamedNode(edge_target_name))
         finally:
             if f:
                 f.close()
