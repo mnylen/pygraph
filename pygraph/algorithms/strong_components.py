@@ -42,7 +42,7 @@ class TarjansAlgorithm(object):
             if not self.indexes.has_key(w):
                 self.__strong_connect(w)
                 self.lowlinks[v] = min(self.lowlinks[v], self.lowlinks[w])
-            elif w in self.stack:
+            elif w in self.in_stack:
                 self.lowlinks[v] = min(self.lowlinks[v], self.indexes[w])
 
         if self.lowlinks[v] == self.indexes[v]:
