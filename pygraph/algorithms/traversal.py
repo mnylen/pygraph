@@ -25,17 +25,16 @@ def dfs(digraph, root, visitor = None, continue_lambda = None):
     """
 
     stack     = list()
-    visited   = dict()
+    visited   = set()
     stack.append(root)
     cancelled = False
 
     while len(stack) > 0:
         top = stack.pop()
 
-        if not visited.has_key(top):
-            visited[top] = True
-
-            if visitor is not None: visitor.visit_node(digraph, top)
+        if not top in visited:
+            if visitor is not None:
+                visitor.visit_node(digraph, top)
 
             if continue_lambda is not None:
                 if not continue_lambda(top):
@@ -43,7 +42,9 @@ def dfs(digraph, root, visitor = None, continue_lambda = None):
                     break
 
             for adjacent_node in digraph.nodes[top]:
-                if visitor is not None: visitor.visit_edge(digraph, top, adjacent_node)
+                if visitor is not None:
+                    visitor.visit_edge(digraph, top, adjacent_node)
+
                 stack.append(adjacent_node)
 
     return cancelled
