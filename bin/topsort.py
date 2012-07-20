@@ -2,7 +2,7 @@ import sys
 sys.path.append("../pygraph")
 
 if len(sys.argv) < 2:
-    print "GRAPHFILE must be given. Check --usage"
+    print("GRAPHFILE must be given. Check --usage")
     exit(1)
 
 import pygraph.core as core
@@ -14,4 +14,4 @@ dg = transitivity.reduce(dg)
 
 order = topsort.topsort(dg)
 for node in order:
-    print str(node)
+    print(str(node))

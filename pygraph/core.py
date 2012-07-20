@@ -39,7 +39,7 @@ class ComponentNode(Node):
         self.nodes = nodes
 
     def __str__(self):
-        return "__".join(map(lambda x: str(x), self.nodes))
+        return "__".join([str(x) for x in self.nodes])
 
 
 class ByteNodeMatrix(object):
@@ -58,7 +58,7 @@ class ByteNodeMatrix(object):
 
         """
 
-        if not self.matrix.has_key(i):
+        if i not in self.matrix:
             self.matrix[i] = dict()
 
         self.matrix[i][j] = b
@@ -72,7 +72,7 @@ class ByteNodeMatrix(object):
 
         """
 
-        if self.matrix.has_key(i) and self.matrix[i].has_key(j):
+        if i in self.matrix and j in self.matrix[i]:
             return self.matrix[i][j]
         else:
             return -1
@@ -95,12 +95,12 @@ class Digraph(object):
         self.incoming[to_node].add(from_node)
 
     def add_node(self, node):
-        if not self.nodes.has_key(node):
+        if node not in self.nodes:
             self.nodes[node] = set()
             self.incoming[node] = set()
 
     def has_edge(self, from_node, to_node):
-        return self.nodes.has_key(from_node) and to_node in self.nodes[from_node]
+        return from_node in self.nodes and to_node in self.nodes[from_node]
 
     def remove_edge(self, from_node, to_node):
         self.nodes[from_node].remove(to_node)

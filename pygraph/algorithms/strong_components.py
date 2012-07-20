@@ -28,7 +28,7 @@ class TarjansAlgorithm(object):
         self.nodemap    = dict()
 
         for node in self.digraph.nodes_set():
-            if not self.indexes.has_key(node):
+            if node not in self.indexes:
                 self.__strong_connect(node)
 
     def __strong_connect(self, v):
@@ -39,7 +39,7 @@ class TarjansAlgorithm(object):
         self.in_stack.add(v)
 
         for w in self.digraph.nodes[v]:
-            if not self.indexes.has_key(w):
+            if w not in self.indexes:
                 self.__strong_connect(w)
                 self.lowlinks[v] = min(self.lowlinks[v], self.lowlinks[w])
             elif w in self.in_stack:
