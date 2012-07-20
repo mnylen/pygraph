@@ -28,7 +28,7 @@ class TopologicalSort(object):
                     nodes.append(m)
 
         if len(self.digraph.edges()) > 0:
-            raise RuntimeError, "Graph has at least one cycle. May be you forgot to use StrongComponents.quotient?"
+            raise RuntimeError("Graph has at least one cycle. May be you forgot to use StrongComponents.quotient?")
 
         return order
 

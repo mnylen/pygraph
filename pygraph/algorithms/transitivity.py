@@ -53,7 +53,7 @@ def acyclic_reduce(digraph):
                     # therefore have also edge i -> k, which can be
                     # removed as redundant.
 
-                    if not remove.has_key(i): remove[i] = set()
+                    if i not in remove: remove[i] = set()
                     remove[i].add(k)
                     matrix.set(i, k, 0)
 
